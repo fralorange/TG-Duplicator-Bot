@@ -1,6 +1,6 @@
-﻿using FreelanceBotBase.Bot.Commands.Greeting;
+﻿using FreelanceBotBase.Bot.Commands.Forward;
 using FreelanceBotBase.Bot.Commands.Interface;
-using FreelanceBotBase.Bot.Commands.Usage;
+using Microsoft.Extensions.Configuration;
 using Telegram.Bot;
 
 namespace FreelanceBotBase.Bot.Commands.Factory
@@ -8,19 +8,19 @@ namespace FreelanceBotBase.Bot.Commands.Factory
     public class CommandFactory
     {
         private readonly ITelegramBotClient _botClient;
+        private readonly IConfiguration _configuration;
 
-        public CommandFactory(ITelegramBotClient botClient)
+        public CommandFactory(ITelegramBotClient botClient, IConfiguration configuration)
         {
             _botClient = botClient;
+            _configuration = configuration;
         }
 
         public ICommand CreateCommand(string commandName)
         {
             return commandName switch
             {
-                "/hi" => new GreetingCommand(_botClient),
-                _ => new UsageCommand(_botClient)
-                // _ => new NullCommand()
+                _ => new ForwardCommand(_botClient, _configuration)
             };
         }
     }

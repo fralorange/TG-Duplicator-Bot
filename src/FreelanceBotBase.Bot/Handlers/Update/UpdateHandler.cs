@@ -26,11 +26,8 @@ namespace FreelanceBotBase.Bot.Handlers.Update
         {
             var handler = update switch
             {
-                { Message: { } message } => BotOnMessageReceived(message, cancellationToken),
-                { EditedMessage: { } message } => BotOnMessageReceived(message, cancellationToken),
-                { CallbackQuery: { } callbackQuery } => BotOnCallbackQueryReceived(callbackQuery, cancellationToken),
-                { InlineQuery: { } inlineQuery } => BotOnInlineQueryReceived(inlineQuery, cancellationToken),
-                { ChosenInlineResult: { } chosenInlineResult } => BotOnChosenInlineResultReceived(chosenInlineResult, cancellationToken),
+                { ChannelPost: { } message } => BotOnMessageReceived(message, cancellationToken),
+                { EditedChannelPost: { } message } => BotOnMessageReceived(message, cancellationToken),
                 _ => UnknownUpdateHandlerAsync(update, cancellationToken)
             };
 
@@ -40,10 +37,10 @@ namespace FreelanceBotBase.Bot.Handlers.Update
         private async Task BotOnMessageReceived(Message message, CancellationToken cancellationToken)
         {
             _logger.LogInformation("Receive message type: {MessageType}", message.Type);
-            if (message.Text is not { } messageText)
+            if (message.Caption is not { })
                 return;
 
-            ICommand command = _commandFactory.CreateCommand(messageText.Split(' ')[0]);
+            ICommand command = _commandFactory.CreateCommand("");
 
             Message sentMessage = await command.ExecuteAsync(message, cancellationToken);
             _logger.LogInformation("The message was sent with id: {SentMessageId}", sentMessage.MessageId);
