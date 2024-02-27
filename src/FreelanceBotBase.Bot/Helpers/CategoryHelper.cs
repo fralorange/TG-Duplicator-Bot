@@ -7,10 +7,17 @@ namespace FreelanceBotBase.Bot.Helpers
         public static Dictionary<string, string> GetCategories(IConfiguration configuration)
         {
             var categories = new Dictionary<string, string>();
-            var categorySection = configuration.GetSection("Categories");
-            foreach (IConfigurationSection section in categorySection.GetChildren())
+            int i = 0;
+            while (true)
             {
-                categories.Add(section["Name"]!, section["Channel"]!);
+                var name = configuration[$"CATEGORIES_{i}_NAME"];
+                var channel = configuration[$"CATEGORIES_{i}_CHANNEL"];
+                if (name == null || channel == null)
+                {
+                    break;
+                }
+                categories.Add(name, channel);
+                i++;
             }
             return categories;
         }
